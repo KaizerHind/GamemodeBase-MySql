@@ -9,6 +9,7 @@ stock CongelarEx(playerid,segundos=0)
 	}
 	return 1;
 }
+
 CALLBACK: Descongelar(playerid) return TogglePlayerControllable(playerid,true);
 
 stock LimpiarPantalla(playerid,lineas)
