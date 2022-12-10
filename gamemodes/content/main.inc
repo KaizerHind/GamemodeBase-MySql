@@ -5,6 +5,8 @@ main() {
     print("|*- Creditos:                          |");
     print("|                                      |");
     print("|*- KaizerHind - Developer.            |");
-    print("|*- D13G0 - Helper in Code.            |");
+    print("|*- D13G0 - Doubts about MySql.        |");
+    print("|*- root - Hash password solution.     |");
+    print("|*- Galasso - Hash password solution.  |");
     print("========================================");
 }
