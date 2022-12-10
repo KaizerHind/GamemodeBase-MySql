@@ -9,19 +9,17 @@ public OnGameModeInit()
     AntiDescompiler();
 
 	/* ======== [ Configuración general ] ======== */
-
 	ShowPlayerMarkers(PLAYER_MARKERS_MODE_GLOBAL);
 	ShowNameTags(1);
 	EnableStuntBonusForAll(0);
 	DisableInteriorEnterExits();
 	ManualVehicleEngineAndLights();
     SetGameModeText(MODE_SERVER);
-	SendRconCommand("hostname "#NOMBRE_SERVER"");
+	SendRconCommand("hostname "#SERVER_NAME" "#MODE_SERVER"");
     SendRconCommand("mapname San Andreas");
     SendRconCommand("weburl "#DISCORD_SV"");
- 	SendRconCommand("password "); //RCON k0x2xkx1xk5
+ 	SendRconCommand("password ");
 
-	CreateDynamicCP(-1444.6019, -287.1482, 13.6070,  3, 0, 0, .streamdistance = 20.0);
 
     DB = mysql_connect_file("mysql.ini");
     if(mysql_errno(DB) == 0){ print("La Conexion con la DB ha sido Exitosa - [MySQL]\n");}
@@ -74,7 +72,7 @@ public OnGameModeExit()
 
 public OnPlayerSpawn(playerid)
 {
-    if(GetPVarInt(playerid, "PuedeIngresar") == 0) {Kick(playerid);}
+    if(GetPVarInt(playerid, "Logueado") == 0) {Kick(playerid);}
 	/* ############### DON TOUCH ############### */
 	#if defined publics_OnPlayerSpawn
 		return publics_OnPlayerSpawn(playerid);
@@ -98,8 +96,10 @@ public OnPlayerSpawn(playerid)
 public OnPlayerConnect(playerid)
 {
 	CamaraAleatoria(playerid);
+	LoadPlayerTextdraw(playerid);
 	mysql_format(DB, global_str, sizeof global_str, "SELECT * FROM users WHERE Name = '%e'", PlayerName(playerid));
 	mysql_tquery(DB, global_str, "OnPlayerDataCheck", "d", playerid);
+	
 	/* ############### DON TOUCH ############### */
 	#if defined publics_OnPlayerConnect
 		return publics_OnPlayerConnect(playerid);
@@ -122,19 +122,19 @@ public OnPlayerConnect(playerid)
 
 CALLBACK:OnPlayerDataCheck(playerid){
 	if (IsPlayerNPC(playerid)) return SpawnPlayer(playerid);
-	if (GetPVarInt(playerid, "PuedeIngresar"))
+	if (GetPVarInt(playerid, "Logueado"))
 	{
 	 	Kick(playerid);
 	 	return 1;
 	}
 
 	if(cache_num_rows() > 0){
-		new hash[64 + 1];
 		cache_get_value_name(0, "Password", hash);
 		format(InfoJugador[playerid][jPass], 65, "%s", hash);
-		sDialog(playerid, dLogin, DIALOG_STYLE_PASSWORD, mHeader, mIngreso, ""CBLANCO"entrar", ""CBLANCO"Salir");
+		ShowDialog(playerid, dLogin, DIALOG_STYLE_PASSWORD, mHeader, mIngreso, ""#CBLANCO"entrar", ""#CBLANCO"Salir");
 	}else{
-		sDialog(playerid, dRegistro, DIALOG_STYLE_PASSWORD, mHeader, mRegistro, ""CBLANCO"Entrar", ""CBLANCO"Salir");
+		ShowRegisterTextdraw(playerid);
+		//ShowDialog(playerid, dRegistro, DIALOG_STYLE_PASSWORD, mHeader, mRegistro, ""#CBLANCO"Entrar", ""#CBLANCO"Salir");
 	}
 	return 1;
 }
@@ -177,32 +177,36 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else
 				{
-					sDialog(playerid, dLogin, DIALOG_STYLE_PASSWORD, mHeader, mError,  ""CBLANCO"Entrar", ""CBLANCO"Salir");
+					ShowDialog(playerid, dLogin, DIALOG_STYLE_PASSWORD, mHeader, mError,  ""#CBLANCO"Entrar", ""#CBLANCO"Salir");
 				}
 			}
 			else Kick(playerid);
 		}
-		case dRegistro:{
-			if(response)
-			{
+        case dRegistro:{
+            if(response)
+            {
+                new password[64];
 				SHA256_PassHash(inputtext, "123h1h23hh", InfoJugador[playerid][TempHash], 64);
-				sDialog(playerid, dGender, DIALOG_STYLE_MSGBOX, "YourName Server", "{ffffff}A Continuacion indicanos tu genero.", "Masculino", "Femenino");
-			}
-			else Kick(playerid);
-		}
+                for(new i; i < strlen(inputtext); i++) password[i] = 'o';
+                PlayerTextDrawSetString(playerid, Reg_GetPass[playerid], password);
+                PlayerTextDrawShow(playerid,Reg_GetPass[playerid]);
+                //ShowDialog(playerid, dGender, DIALOG_STYLE_MSGBOX, ""#SERVER_NAME" "#MODE_SERVER"", "{ffffff}A Continuacion indicanos tu genero.", "Masculino", "Femenino");
+            }
+            else Kick(playerid);
+        }
 		case dGender:
 		{
 			if(response)
 			{
 				InfoJugador[playerid][jSexo] = 1;
 				InfoJugador[playerid][jRopa] = 46;
-				sDialog(playerid, dFinish, DIALOG_STYLE_MSGBOX, mHeader, ""#CVERDE"Registro Finalizado; "#CBLANCO"Recuerda cumplir las\nnormas o podrias ser sancionado.", "Aceptar", "");
+				ShowDialog(playerid, dFinish, DIALOG_STYLE_MSGBOX, mHeader, ""#CVERDE"Registro Finalizado; "#CBLANCO"Recuerda cumplir las\nnormas o podrias ser sancionado.", "Aceptar", "");
 			}
 			else
 			{
 				InfoJugador[playerid][jSexo] = 2;
 				InfoJugador[playerid][jRopa] = 12;
-				sDialog(playerid, dFinish, DIALOG_STYLE_MSGBOX, mHeader, ""#CVERDE"Registro Finalizado; "#CBLANCO"Recuerda cumplir las\nnormas o podrias ser sancionado.", "Aceptar", "");
+				ShowDialog(playerid, dFinish, DIALOG_STYLE_MSGBOX, mHeader, ""#CVERDE"Registro Finalizado; "#CBLANCO"Recuerda cumplir las\nnormas o podrias ser sancionado.", "Aceptar", "");
 			}
 		}
 		case dFinish:
@@ -245,12 +249,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	forward publics_OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]);
 #endif
 
-public OnPlayerClickTextDraw(playerid,Text:clickedid)
+public OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
+    new bool:cancel = (clickedid == Text:INVALID_TEXT_DRAW);
 
+    if(IsPlayerConnected(playerid))
+    {
+		if(cancel)
+		{
+			Kick(playerid);
+			return HideRegisterTextdraw(playerid);
+		}
+		else if(clickedid == gl_Register[22])
+		{
+			ShowDialog(playerid, dRegistro, DIALOG_STYLE_PASSWORD, mHeader, "Ingresa tu contraseña a continuacion.\nEn caso de que desees cambiarla, puedes hacerlo\n, una vez termines tu registro, esta sera permanente.", ""#CBLANCO"Entrar", ""#CBLANCO"Salir");
+		}
+    }
 	/* ############### DON TOUCH ############### */
 	#if defined publics_OnPlayerClickTextDraw
-		return publics_OnPlayerClickTextDraw(playerid,Text:clickedid)
+		return publics_OnPlayerClickTextDraw(playerid, Text:clickedid);
 	#else
 		return 1;
 	#endif
@@ -264,5 +281,5 @@ public OnPlayerClickTextDraw(playerid,Text:clickedid)
 
 #define OnPlayerClickTextDraw publics_OnPlayerClickTextDraw
 #if defined publics_OnPlayerClickTextDraw
-	forward publics_OnPlayerClickTextDraw(playerid,Text:clickedid)
+	forward publics_OnPlayerClickTextDraw(playerid, Text:clickedid);
 #endif

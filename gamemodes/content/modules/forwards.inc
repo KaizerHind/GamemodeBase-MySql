@@ -5,7 +5,7 @@ public PlayerIngreso(playerid)
     if(cache_num_rows () == 0)
     {
         Mensaje(playerid, -1, "Contraseña incorrecta, ingresala nuevamente.");
-        sDialog(playerid, dLogin, DIALOG_STYLE_PASSWORD, mHeader, mError,  ""CBLANCO"Entrar", ""CBLANCO"Salir");
+        ShowDialog(playerid, dLogin, DIALOG_STYLE_PASSWORD, mHeader, mError,  ""CBLANCO"Entrar", ""CBLANCO"Salir");
     }
     else
     {
@@ -15,7 +15,7 @@ public PlayerIngreso(playerid)
 
 		SetPlayerScore(playerid, InfoJugador[playerid][jScore]);
 
-        SetPVarInt(playerid, "PuedeIngresar", 1);
+        SetPVarInt(playerid, "Logueado", 1);
         AccountLoaded(playerid);
     }
     return 1;
@@ -39,7 +39,7 @@ FinishRegister(playerid)
 	Mensaje(playerid,-1,"- "#CBLANCO"!Felicidades; Bienvenido a "mHeader""#CBLANCO", disfruta tu estancia!");
 
     //Spawn de Registro
-	SetPVarInt(playerid, "PuedeIngresar", 1);
+	SetPVarInt(playerid, "Logueado", 1);
    	CongelarEx(playerid, 6);
 	SetPlayerVirtualWorld(playerid, 0);
     SetSpawnInfo(playerid, 0, InfoJugador[playerid][jRopa], -1423.0900, -288.7728, 14.1594, 138.0, 0, 0, 0, 0, 0, 0);
