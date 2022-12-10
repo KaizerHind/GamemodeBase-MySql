@@ -1,9 +1,5 @@
 /*======================================================================*/
 
-new
-	MySQL:DB,
-	global_str[1024];
-
 enum jInfo
 {
     ID,
@@ -15,6 +11,25 @@ enum jInfo
     jScore
 }
 
+new
+	MySQL:DB,
+	global_str[1024],
+    hash[64 + 1];
+
+/* # Global/Player Textdraws # */
+new 
+    Text:gl_Register[24],
+    Text:gl_Login[16],
+    /*################################*/
+    PlayerText:Reg_GetName[MAX_PLAYERS],
+    PlayerText:Reg_GetPass[MAX_PLAYERS],
+    PlayerText:Reg_GetAge[MAX_PLAYERS],
+    PlayerText:Reg_GetGender[MAX_PLAYERS],
+    /*################################*/
+    PlayerText:Log_GetName[MAX_PLAYERS],
+    PlayerText:Log_GetPass[MAX_PLAYERS]
+    ;
+
 new InfoJugador[MAX_PLAYERS][jInfo];
 
 /*======================================================================*/
@@ -24,21 +39,19 @@ new InfoJugador[MAX_PLAYERS][jInfo];
 #define Loop(%0,%1,%2)  	for(new %0 = %2; %0 < %1; %0++)
 #define Mensaje         	SendClientMessage
 #define MensajeTodos 		SendClientMessageToAll
-#define TextoJugador 		GameTextForPlayer
-#define TextoTodos 			GameTextForAll
 
-#define sDialog(            ShowPlayerDialog(
+#define ShowDialog(            ShowPlayerDialog(
 
 /* Configuracion Manual Server.cfg */
 #define DISCORD_SV          "https://discord.gg/CODIGO"
-#define NOMBRE_SERVER       "Add Your ServerName Here"
+#define SERVER_NAME         "GamemodeBase"
 #define MODE_SERVER         "Roleplay"
 #define LANGUAGE_SERVER     "Español/Spanish"
 
 /* Mensajes Predeterminados */
-#define mHeader             "\t"#CWZ"YourName "#CWZ2"Server"
+#define mHeader             "\t"#CWZ""#SERVER_NAME" "#CWZ2""#MODE_SERVER""
 #define mRegistro           ""#CBLANCO"Bienvenido al Servidor.\nIngresa una contraseña para registrarte."
-#define mIngreso            ""#CBLANCO"Bienvenido a "#CWZ"YourName "#CWZ2"Server\n"#CBLANCO"Ingresa tu contraseña para ingresar al Servidor."
+#define mIngreso            ""#CBLANCO"Bienvenido a "#CWZ""#SERVER_NAME" "#CWZ2""#MODE_SERVER"\n"#CBLANCO"Ingresa tu contraseña para ingresar al Servidor."
 #define mError				""#CERROR"La contraseña ingresada no corresponde\na la registrada en la "#CBLANCO"Base de datos.\n\nIntenta nuevamente."
 
 /*======================================================================*/
