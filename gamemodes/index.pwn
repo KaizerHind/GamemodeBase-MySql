@@ -32,8 +32,10 @@ AntiDescompiler() {
 #include	"content/cColors.inc"
 #include	"content/mVars_.inc"
 
+
 /* ==# Funcs Modules #== */
 #include	"content/main.inc"
+#include	"content/textdraws/ongame_td.inc"
 #include	"content/modules/publics.inc"
 #include	"content/modules/forwards.inc"
 #include    "content/modules/commands.inc"
