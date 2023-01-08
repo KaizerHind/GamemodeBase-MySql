@@ -38,5 +38,5 @@ AntiDescompiler() {
 #include	"content/textdraws/ongame_td.inc"
 #include	"content/modules/publics.inc"
 #include	"content/modules/forwards.inc"
-#include    "content/modules/commands.inc"
 #include	"content/functions/stocks.inc"
+#include    "content/modules/commands.inc"

@@ -12,7 +12,9 @@ pawno/libpawnc.dll
 pawno/pawnc.dll
 pawno/pawnox.ini
 pawno/settings.ini
-logs/errors.llog
+logs/errors.log
 logs/warnings.log
+logs/log-core.log
 logs/plugins/mysql.log
+td-actions-main.zip
 server_log.txt
