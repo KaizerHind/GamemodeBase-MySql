@@ -16,20 +16,6 @@ new
 	global_str[1024],
     hash[64 + 1];
 
-/* # Global/Player Textdraws # */
-new 
-    Text:gl_Register[24],
-    Text:gl_Login[16],
-    /*################################*/
-    PlayerText:Reg_GetName[MAX_PLAYERS],
-    PlayerText:Reg_GetPass[MAX_PLAYERS],
-    PlayerText:Reg_GetAge[MAX_PLAYERS],
-    PlayerText:Reg_GetGender[MAX_PLAYERS],
-    /*################################*/
-    PlayerText:Log_GetName[MAX_PLAYERS],
-    PlayerText:Log_GetPass[MAX_PLAYERS]
-    ;
-
 new InfoJugador[MAX_PLAYERS][jInfo];
 
 /*======================================================================*/
