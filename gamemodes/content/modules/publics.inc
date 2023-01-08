@@ -96,7 +96,6 @@ public OnPlayerSpawn(playerid)
 public OnPlayerConnect(playerid)
 {
 	CamaraAleatoria(playerid);
-	LoadPlayerTextdraw(playerid);
 	mysql_format(DB, global_str, sizeof global_str, "SELECT * FROM users WHERE Name = '%e'", PlayerName(playerid));
 	mysql_tquery(DB, global_str, "OnPlayerDataCheck", "d", playerid);
 	
@@ -133,8 +132,7 @@ CALLBACK:OnPlayerDataCheck(playerid){
 		format(InfoJugador[playerid][jPass], 65, "%s", hash);
 		ShowDialog(playerid, dLogin, DIALOG_STYLE_PASSWORD, mHeader, mIngreso, ""#CBLANCO"entrar", ""#CBLANCO"Salir");
 	}else{
-		ShowRegisterTextdraw(playerid);
-		//ShowDialog(playerid, dRegistro, DIALOG_STYLE_PASSWORD, mHeader, mRegistro, ""#CBLANCO"Entrar", ""#CBLANCO"Salir");
+		ShowDialog(playerid, dRegistro, DIALOG_STYLE_PASSWORD, mHeader, mRegistro, ""#CBLANCO"Entrar", ""#CBLANCO"Salir");
 	}
 	return 1;
 }
@@ -185,12 +183,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         case dRegistro:{
             if(response)
             {
-                new password[64];
 				SHA256_PassHash(inputtext, "123h1h23hh", InfoJugador[playerid][TempHash], 64);
-                for(new i; i < strlen(inputtext); i++) password[i] = 'o';
-                PlayerTextDrawSetString(playerid, Reg_GetPass[playerid], password);
-                PlayerTextDrawShow(playerid,Reg_GetPass[playerid]);
-                //ShowDialog(playerid, dGender, DIALOG_STYLE_MSGBOX, ""#SERVER_NAME" "#MODE_SERVER"", "{ffffff}A Continuacion indicanos tu genero.", "Masculino", "Femenino");
+                ShowDialog(playerid, dGender, DIALOG_STYLE_MSGBOX, ""#SERVER_NAME" "#MODE_SERVER"", "{ffffff}A Continuacion indicanos tu genero.", "Masculino", "Femenino");
             }
             else Kick(playerid);
         }
@@ -251,20 +245,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 public OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
-    new bool:cancel = (clickedid == Text:INVALID_TEXT_DRAW);
+    /*new bool:cancel = (clickedid == Text:INVALID_TEXT_DRAW);
 
     if(IsPlayerConnected(playerid))
     {
 		if(cancel)
 		{
 			Kick(playerid);
-			return HideRegisterTextdraw(playerid);
+			return #IgnoredThis#(playerid);
 		}
-		else if(clickedid == gl_Register[22])
+		else if(clickedid == #IgnoredThis#)
 		{
-			ShowDialog(playerid, dRegistro, DIALOG_STYLE_PASSWORD, mHeader, "Ingresa tu contraseña a continuacion.\nEn caso de que desees cambiarla, puedes hacerlo\n, una vez termines tu registro, esta sera permanente.", ""#CBLANCO"Entrar", ""#CBLANCO"Salir");
+			
 		}
-    }
+    }*/
 	/* ############### DON TOUCH ############### */
 	#if defined publics_OnPlayerClickTextDraw
 		return publics_OnPlayerClickTextDraw(playerid, Text:clickedid);
